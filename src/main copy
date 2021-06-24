@@ -1,0 +1,163 @@
+//-----------------------------------------------------
+/*
+
+A minimal OpenGL Cmake project
+
+    uses: SDL2, glew, glu, OpenGL
+
+    additional : lodepng and Matrices lib in  include folder
+
+*/
+//-----------------------------------------------------
+#include <SDL2/SDL.h>
+#include <GL/glew.h>
+#include <GL/glu.h>
+#include <GL/gl.h>
+
+#include "shader.h"
+
+#include <stdio.h>
+#include <stdlib.h>
+
+
+//window dimensions
+int windowWidth = 800;
+int windowHeight = 600;
+
+int windowPosx = 0;
+int windowPosy = 0;
+
+//geometry
+float vertices[] = {
+    -0.5f, -0.5f, 0.0f,
+     0.5f, -0.5f, 0.0f,
+     0.0f,  0.5f, 0.0f
+};  
+
+unsigned int VBO;
+unsigned int VAO;
+
+
+//window pointer
+SDL_Window *window;
+
+static void quit()
+{
+    SDL_Quit();
+    exit(0);
+} 
+
+static void handle_key_down( SDL_Keysym* keysym )
+{
+    switch( keysym->sym ) {
+    case SDLK_ESCAPE:
+        quit();
+        break;
+
+    default:
+        break;
+    }
+}
+
+static void event()
+{
+    SDL_Event event;
+
+    while( SDL_PollEvent( &event ) ) {
+
+        switch( event.type ) {
+        case SDL_KEYDOWN:
+            handle_key_down( &event.key.keysym );
+            break;
+        case SDL_QUIT:
+            quit();
+            break;
+        }
+
+    }
+}
+
+static void draw( SDL_Window *window,Shader shader1)
+{
+    glClear(GL_COLOR_BUFFER_BIT);
+    shader1.use();
+    glBindVertexArray(VAO); 
+
+    glDrawArrays(GL_TRIANGLES, 0, 3);
+
+    SDL_GL_SwapWindow(window);
+    SDL_Delay( 1 );
+}
+
+static bool init()
+{
+    //SDL init
+	if ( SDL_Init( SDL_INIT_VIDEO | SDL_INIT_TIMER ) < 0 )
+	{
+		printf("%s - SDL could not initialize! SDL Error: %s\n", __FUNCTION__, SDL_GetError());
+		return false;
+	}
+
+    SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 4 );
+	SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 1 );
+	SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE );
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER,1);
+
+    SDL_GL_SetSwapInterval(1);
+
+    //SDL window creation
+    Uint32 windowFlags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;
+
+    window = SDL_CreateWindow( "oui bonjour", windowPosx, windowPosy, windowWidth, windowHeight, windowFlags );
+	if (window == NULL)
+	{
+		printf( "%s - Window could not be created! SDL Error: %s\n", __FUNCTION__, SDL_GetError() );
+		return false;
+	}
+
+    //GL context creation
+    SDL_GLContext windowGLContext = SDL_GL_CreateContext(window);
+	if (windowGLContext == NULL)
+	{
+		printf( "%s - OpenGL context could not be created! SDL Error: %s\n", __FUNCTION__, SDL_GetError() );
+		return false;
+	}
+
+    //glew init
+	GLenum nGlewError = glewInit();
+	if (nGlewError != GLEW_OK)
+	{
+		printf( "%s - Error initializing GLEW! %s\n", __FUNCTION__, glewGetErrorString( nGlewError ) );
+		return false;
+	}
+    return true;
+}
+
+static void sceneSetup()
+{
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+
+    glBindVertexArray(VAO);  
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);  
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0); 
+    glBindVertexArray(0);
+}
+
+int main( int argc, char* argv[] )
+{
+    if(!init()) printf("failed\n");
+    glViewport( 0, 0, windowWidth, windowHeight );
+    sceneSetup();
+    Shader shader1("../shader/vertex.vs","../shader/fragment.fs");
+    while( 1 ) {
+        event();
+        draw(window,shader1);
+    }
+
+
+    return 0;
+}

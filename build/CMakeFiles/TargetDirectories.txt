@@ -1,0 +1,3 @@
+/home/stagiaire/git/Prise3d_StereoThreshold_Alioscopy/build/CMakeFiles/rebuild_cache.dir
+/home/stagiaire/git/Prise3d_StereoThreshold_Alioscopy/build/CMakeFiles/main.dir
+/home/stagiaire/git/Prise3d_StereoThreshold_Alioscopy/build/CMakeFiles/edit_cache.dir
