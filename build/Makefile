@@ -129,6 +129,78 @@ main/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/build
 .PHONY : main/fast
 
+include/Matrices.o: include/Matrices.cpp.o
+.PHONY : include/Matrices.o
+
+# target to build an object file
+include/Matrices.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/include/Matrices.cpp.o
+.PHONY : include/Matrices.cpp.o
+
+include/Matrices.i: include/Matrices.cpp.i
+.PHONY : include/Matrices.i
+
+# target to preprocess a source file
+include/Matrices.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/include/Matrices.cpp.i
+.PHONY : include/Matrices.cpp.i
+
+include/Matrices.s: include/Matrices.cpp.s
+.PHONY : include/Matrices.s
+
+# target to generate assembly for a file
+include/Matrices.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/include/Matrices.cpp.s
+.PHONY : include/Matrices.cpp.s
+
+include/lodepng.o: include/lodepng.cpp.o
+.PHONY : include/lodepng.o
+
+# target to build an object file
+include/lodepng.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/include/lodepng.cpp.o
+.PHONY : include/lodepng.cpp.o
+
+include/lodepng.i: include/lodepng.cpp.i
+.PHONY : include/lodepng.i
+
+# target to preprocess a source file
+include/lodepng.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/include/lodepng.cpp.i
+.PHONY : include/lodepng.cpp.i
+
+include/lodepng.s: include/lodepng.cpp.s
+.PHONY : include/lodepng.s
+
+# target to generate assembly for a file
+include/lodepng.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/include/lodepng.cpp.s
+.PHONY : include/lodepng.cpp.s
+
+include/stb_image.o: include/stb_image.cpp.o
+.PHONY : include/stb_image.o
+
+# target to build an object file
+include/stb_image.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/include/stb_image.cpp.o
+.PHONY : include/stb_image.cpp.o
+
+include/stb_image.i: include/stb_image.cpp.i
+.PHONY : include/stb_image.i
+
+# target to preprocess a source file
+include/stb_image.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/include/stb_image.cpp.i
+.PHONY : include/stb_image.cpp.i
+
+include/stb_image.s: include/stb_image.cpp.s
+.PHONY : include/stb_image.s
+
+# target to generate assembly for a file
+include/stb_image.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/include/stb_image.cpp.s
+.PHONY : include/stb_image.cpp.s
+
 src/glad.o: src/glad.c.o
 .PHONY : src/glad.o
 
@@ -186,6 +258,15 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... main"
+	@echo "... include/Matrices.o"
+	@echo "... include/Matrices.i"
+	@echo "... include/Matrices.s"
+	@echo "... include/lodepng.o"
+	@echo "... include/lodepng.i"
+	@echo "... include/lodepng.s"
+	@echo "... include/stb_image.o"
+	@echo "... include/stb_image.i"
+	@echo "... include/stb_image.s"
 	@echo "... src/glad.o"
 	@echo "... src/glad.i"
 	@echo "... src/glad.s"

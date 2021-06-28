@@ -5,8 +5,8 @@
 //SDL window
 //--------------------------------------------------------
 //window dimensions
-int windowWidth = 800;
-int windowHeight = 600;
+int windowWidth = 1600;
+int windowHeight = 900;
 
 int windowPosx = 0;
 int windowPosy = 0;

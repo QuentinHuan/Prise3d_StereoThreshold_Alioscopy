@@ -18,7 +18,7 @@ find_package(GLEW REQUIRED)
 include_directories(${GLEW_INCLUDE_DIRS})
 
 #source directory
-file(GLOB SOURCES "src/*.c*")
+file(GLOB SOURCES "src/*.c*" "include/*.c*")
 
 #link 
 add_executable(main ${SOURCES})

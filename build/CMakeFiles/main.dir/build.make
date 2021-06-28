@@ -69,10 +69,52 @@ include CMakeFiles/main.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/main.dir/flags.make
 
+CMakeFiles/main.dir/include/Matrices.cpp.o: CMakeFiles/main.dir/flags.make
+CMakeFiles/main.dir/include/Matrices.cpp.o: ../include/Matrices.cpp
+CMakeFiles/main.dir/include/Matrices.cpp.o: CMakeFiles/main.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/stagiaire/git/Prise3d_StereoThreshold_Alioscopy/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/main.dir/include/Matrices.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/main.dir/include/Matrices.cpp.o -MF CMakeFiles/main.dir/include/Matrices.cpp.o.d -o CMakeFiles/main.dir/include/Matrices.cpp.o -c /home/stagiaire/git/Prise3d_StereoThreshold_Alioscopy/include/Matrices.cpp
+
+CMakeFiles/main.dir/include/Matrices.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/main.dir/include/Matrices.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/stagiaire/git/Prise3d_StereoThreshold_Alioscopy/include/Matrices.cpp > CMakeFiles/main.dir/include/Matrices.cpp.i
+
+CMakeFiles/main.dir/include/Matrices.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/main.dir/include/Matrices.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/stagiaire/git/Prise3d_StereoThreshold_Alioscopy/include/Matrices.cpp -o CMakeFiles/main.dir/include/Matrices.cpp.s
+
+CMakeFiles/main.dir/include/lodepng.cpp.o: CMakeFiles/main.dir/flags.make
+CMakeFiles/main.dir/include/lodepng.cpp.o: ../include/lodepng.cpp
+CMakeFiles/main.dir/include/lodepng.cpp.o: CMakeFiles/main.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/stagiaire/git/Prise3d_StereoThreshold_Alioscopy/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/main.dir/include/lodepng.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/main.dir/include/lodepng.cpp.o -MF CMakeFiles/main.dir/include/lodepng.cpp.o.d -o CMakeFiles/main.dir/include/lodepng.cpp.o -c /home/stagiaire/git/Prise3d_StereoThreshold_Alioscopy/include/lodepng.cpp
+
+CMakeFiles/main.dir/include/lodepng.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/main.dir/include/lodepng.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/stagiaire/git/Prise3d_StereoThreshold_Alioscopy/include/lodepng.cpp > CMakeFiles/main.dir/include/lodepng.cpp.i
+
+CMakeFiles/main.dir/include/lodepng.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/main.dir/include/lodepng.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/stagiaire/git/Prise3d_StereoThreshold_Alioscopy/include/lodepng.cpp -o CMakeFiles/main.dir/include/lodepng.cpp.s
+
+CMakeFiles/main.dir/include/stb_image.cpp.o: CMakeFiles/main.dir/flags.make
+CMakeFiles/main.dir/include/stb_image.cpp.o: ../include/stb_image.cpp
+CMakeFiles/main.dir/include/stb_image.cpp.o: CMakeFiles/main.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/stagiaire/git/Prise3d_StereoThreshold_Alioscopy/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/main.dir/include/stb_image.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/main.dir/include/stb_image.cpp.o -MF CMakeFiles/main.dir/include/stb_image.cpp.o.d -o CMakeFiles/main.dir/include/stb_image.cpp.o -c /home/stagiaire/git/Prise3d_StereoThreshold_Alioscopy/include/stb_image.cpp
+
+CMakeFiles/main.dir/include/stb_image.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/main.dir/include/stb_image.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/stagiaire/git/Prise3d_StereoThreshold_Alioscopy/include/stb_image.cpp > CMakeFiles/main.dir/include/stb_image.cpp.i
+
+CMakeFiles/main.dir/include/stb_image.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/main.dir/include/stb_image.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/stagiaire/git/Prise3d_StereoThreshold_Alioscopy/include/stb_image.cpp -o CMakeFiles/main.dir/include/stb_image.cpp.s
+
 CMakeFiles/main.dir/src/glad.c.o: CMakeFiles/main.dir/flags.make
 CMakeFiles/main.dir/src/glad.c.o: ../src/glad.c
 CMakeFiles/main.dir/src/glad.c.o: CMakeFiles/main.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/stagiaire/git/Prise3d_StereoThreshold_Alioscopy/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/main.dir/src/glad.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/stagiaire/git/Prise3d_StereoThreshold_Alioscopy/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building C object CMakeFiles/main.dir/src/glad.c.o"
 	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/main.dir/src/glad.c.o -MF CMakeFiles/main.dir/src/glad.c.o.d -o CMakeFiles/main.dir/src/glad.c.o -c /home/stagiaire/git/Prise3d_StereoThreshold_Alioscopy/src/glad.c
 
 CMakeFiles/main.dir/src/glad.c.i: cmake_force
@@ -86,7 +128,7 @@ CMakeFiles/main.dir/src/glad.c.s: cmake_force
 CMakeFiles/main.dir/src/main.cpp.o: CMakeFiles/main.dir/flags.make
 CMakeFiles/main.dir/src/main.cpp.o: ../src/main.cpp
 CMakeFiles/main.dir/src/main.cpp.o: CMakeFiles/main.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/stagiaire/git/Prise3d_StereoThreshold_Alioscopy/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/main.dir/src/main.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/stagiaire/git/Prise3d_StereoThreshold_Alioscopy/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/main.dir/src/main.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/main.dir/src/main.cpp.o -MF CMakeFiles/main.dir/src/main.cpp.o.d -o CMakeFiles/main.dir/src/main.cpp.o -c /home/stagiaire/git/Prise3d_StereoThreshold_Alioscopy/src/main.cpp
 
 CMakeFiles/main.dir/src/main.cpp.i: cmake_force
@@ -99,12 +141,18 @@ CMakeFiles/main.dir/src/main.cpp.s: cmake_force
 
 # Object files for target main
 main_OBJECTS = \
+"CMakeFiles/main.dir/include/Matrices.cpp.o" \
+"CMakeFiles/main.dir/include/lodepng.cpp.o" \
+"CMakeFiles/main.dir/include/stb_image.cpp.o" \
 "CMakeFiles/main.dir/src/glad.c.o" \
 "CMakeFiles/main.dir/src/main.cpp.o"
 
 # External object files for target main
 main_EXTERNAL_OBJECTS =
 
+main: CMakeFiles/main.dir/include/Matrices.cpp.o
+main: CMakeFiles/main.dir/include/lodepng.cpp.o
+main: CMakeFiles/main.dir/include/stb_image.cpp.o
 main: CMakeFiles/main.dir/src/glad.c.o
 main: CMakeFiles/main.dir/src/main.cpp.o
 main: CMakeFiles/main.dir/build.make
@@ -113,7 +161,7 @@ main: /usr/lib/x86_64-linux-gnu/libGLX.so
 main: /usr/lib/x86_64-linux-gnu/libGLU.so
 main: /usr/lib/x86_64-linux-gnu/libGLEW.so
 main: CMakeFiles/main.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/stagiaire/git/Prise3d_StereoThreshold_Alioscopy/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX executable main"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/stagiaire/git/Prise3d_StereoThreshold_Alioscopy/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Linking CXX executable main"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/main.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
