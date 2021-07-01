@@ -14,6 +14,7 @@ A minimal OpenGL Cmake project
 #include "mesh.h"
 #include "texture.h"
 #include "context.h"
+#include "utility.h"
 
 //--------------------------------------------------------
 //scene
@@ -56,7 +57,11 @@ int sceneID=0; // 0 is tutorial
 
 // config variable
 //std::string ImageDatabasePath="/mnt/sda2/image/8pov";
-std::string ImageDatabasePath="/home/huan/pbrtOut/8pov/png (copy)";
+//std::string ImageDatabasePath="/home/huan/pbrtOut/8pov/png (copy)";
+
+//std::string ImageDatabasePath="/home/stagiaire/Bureau/image/8pov";
+std::string ImageDatabasePath="/home/stagiaire/Bureau/image/8pov/square";
+
 std::string sceneList={"8pov_crown"};
 int oneSceneDuration=20; // in sec
 int patchUpdateFrequency=5; // in sec
@@ -119,10 +124,13 @@ static void sceneSetup()
     texture_plane2.setTransform(T2);
   }
 
-  // loading reference textures
+  // image loading
   for (int i = 0; i < 8; i++)
   {
+    // loading reference textures
     T_ref[i].load(ImageDatabasePath+"/p3d_crown-0"+std::to_string(i+1)+"/p3d_crown-0"+std::to_string(i+1)+"_00100.png");
+    // loading noise textures
+    T_noise[i].load(ImageDatabasePath+"/p3d_crown-0"+std::to_string(i+1)+"/p3d_crown-0"+std::to_string(i+1)+"_"+leadingZeros(noiseValue,5)+".png");
   }
 
   // unbind framebuffer
@@ -143,7 +151,7 @@ static void draw(SDL_Window *window)
       texture_plane.texture=T_ref[i].ID;
       texture_plane.draw();
 
-      texture_plane2.texture=T_ref[i].ID;
+      texture_plane2.texture=T_noise[i].ID;
       texture_plane2.draw();
     }
     glBindFramebuffer(GL_FRAMEBUFFER, 0);

@@ -182,3 +182,13 @@ textureDataBuffer createBitmapData(std::string path)
 		return out;
 	}
 }
+
+std::string leadingZeros(int number,int zeros)
+{
+	char Buffer[100];
+	int RespCode;
+	RespCode = snprintf(Buffer, 100, "%0*d", zeros, number);
+	return std::string(Buffer);
+}
+
+
