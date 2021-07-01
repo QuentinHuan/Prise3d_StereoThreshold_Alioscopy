@@ -4,9 +4,13 @@ use SDL2 and glew
 
 #sdl2 install command
 sudo apt-get install libsdl2-2.0
+sudo apt install libsdl2-dev
 
 #glew install command
 sudo apt-get install -y libglew-dev
+
+#glm math lib
+sudo apt install libglm-dev
 
 #############################
 ##      compilation

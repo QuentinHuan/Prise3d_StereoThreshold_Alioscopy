@@ -1,27 +1,19 @@
 //-----------------------------------------------------
 /*
-
 A minimal OpenGL Cmake project
 
-    uses: SDL2, glad, OpenGL, [openVR]
-
-    additional : lodepng and Mascreences lib in  include folder
-
+    uses: SDL2, glad, OpenGL
+    additional : lodepng lib in  include folder
 */
 //-----------------------------------------------------
 #include <glad/glad.h>
 #include <SDL2/SDL.h>
-
-#include "shader.h"
-#include "mesh.h"
-
-#include "texture.h"
-
-#include "context.h"
-
 #include <stdio.h>
 #include <stdlib.h>
-
+#include "shader.h"
+#include "mesh.h"
+#include "texture.h"
+#include "context.h"
 
 //--------------------------------------------------------
 //scene
@@ -54,6 +46,7 @@ unsigned int rbo[8]; // render buffer objects
 
 // plane to render ref texture:
 Mesh texture_plane;
+Mesh texture_plane2;
 Shader texture_plane_shader;
 Texture T_ref[8]; // ref 8pov images
 Texture T_noise[8]; // noisy 8pov images
@@ -62,7 +55,8 @@ Texture T_noise[8]; // noisy 8pov images
 int sceneID=0; // 0 is tutorial
 
 // config variable
-std::string ImageDatabasePath="/home/stagiaire/Bureau/image/8pov/res";
+//std::string ImageDatabasePath="/mnt/sda2/image/8pov";
+std::string ImageDatabasePath="/home/huan/pbrtOut/8pov/png (copy)";
 std::string sceneList={"8pov_crown"};
 int oneSceneDuration=20; // in sec
 int patchUpdateFrequency=5; // in sec
@@ -74,11 +68,6 @@ static void sceneSetup()
 {
   // parse config file
   // TODO
-
-  // shader compiling
-  //alioscopy_Shader.init("../shader/fb.vs", "../shader/glsl_mix_update.fs");
-  alioscopy_Shader.init("../shader/fb.vs", "../shader/glsl_mix_update.fs");
-  texture_plane_shader.init("../shader/fb.vs", "../shader/fb.fs");
 
   // setting up the 8 POV framebuffers
   for (int i = 0; i < 8; i++)
@@ -113,14 +102,27 @@ static void sceneSetup()
 
     
     // load mesh
-    screen.load(&vertices_screen[0], sizeof(vertices_screen) / sizeof(float), alioscopy_Shader, 0);
-    texture_plane.load(&vertices[0], sizeof(vertices) / sizeof(float), texture_plane_shader, 0);
+    screen.load(&vertices_screen[0], sizeof(vertices_screen) / sizeof(float),std::string("../shader/fb.vs"), std::string("../shader/glsl_mix_update.fs"), 0);
+
+    // fb screen right
+    texture_plane.load(&vertices[0], sizeof(vertices) / sizeof(float),std::string("../shader/fb.vs"), std::string("../shader/glsl_mix_update.fs"), 0);
+    glm::mat4 T = glm::mat4(1.0);
+    T=glm::translate(T,glm::vec3(0.5f,0,0));
+    T=glm::scale(T,glm::vec3(0.5f,1,1));
+    texture_plane.setTransform(T);
+
+    // fb screen left
+    texture_plane2.load(&vertices[0], sizeof(vertices) / sizeof(float),std::string("../shader/fb.vs"), std::string("../shader/glsl_mix_update.fs"), 0);
+    glm::mat4 T2 = glm::mat4(1.0);
+    T2=glm::translate(T2,glm::vec3(-0.5f,0,0));
+    T2=glm::scale(T2,glm::vec3(0.5f,1,1));
+    texture_plane2.setTransform(T2);
   }
 
   // loading reference textures
   for (int i = 0; i < 8; i++)
   {
-    T_ref[i].load(ImageDatabasePath+"/p3d_crown-0"+std::to_string(i+1)+"_00100.png");
+    T_ref[i].load(ImageDatabasePath+"/p3d_crown-0"+std::to_string(i+1)+"/p3d_crown-0"+std::to_string(i+1)+"_00100.png");
   }
 
   // unbind framebuffer
@@ -137,10 +139,13 @@ static void draw(SDL_Window *window)
       glEnable(GL_DEPTH_TEST);
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+      // set texture and draw
       texture_plane.texture=T_ref[i].ID;
-      texture_plane.draw(texture_plane_shader);
-    }
+      texture_plane.draw();
 
+      texture_plane2.texture=T_ref[i].ID;
+      texture_plane2.draw();
+    }
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glDisable(GL_DEPTH_TEST);
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -155,13 +160,10 @@ static void draw(SDL_Window *window)
       glBindTexture(GL_TEXTURE_2D, T_fb[i]);
       screen.shader.setInt("srcTextures["+std::to_string(i)+"]",i);  
     }
-
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, T_fb[0]);
     glBindVertexArray(screen.VAO);
-
     glDrawArrays(GL_TRIANGLES, 0, screen.vertexCount);
-
     glBindVertexArray(0);
     glUseProgram(0);
 }

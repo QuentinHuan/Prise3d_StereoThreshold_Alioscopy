@@ -32,7 +32,8 @@ public:
 
         if (nError != 0)
         {
-            std::cout << "Failed to load texture" << std::endl;
+            std::cout << "Failed to load texture at: " << path << std::endl;
+            
         }
         else
         {
@@ -52,7 +53,6 @@ public:
             glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY, fLargest);
 
             glBindTexture(GL_TEXTURE_2D, 0);
-            std::cout << "loading texture  " << path << " DONE" << std::endl;
         }
     }
 
