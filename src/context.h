@@ -7,9 +7,9 @@
 //window dimensions
 int downscaling=1;
 int windowWidth = 1920/downscaling;
-int windowHeight = 1028/downscaling;
+int windowHeight = 1080/downscaling;
 
-int windowPosx = 0;
+int windowPosx = 1920;
 int windowPosy = 0;
 
 //window pointer
