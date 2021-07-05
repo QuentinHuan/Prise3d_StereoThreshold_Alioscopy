@@ -94,9 +94,7 @@ public:
     {
         glGenTextures(1, &ID);
         glBindTexture(GL_TEXTURE_2D, ID);
-
-
-
+        
         /* int w = pow(2, ceil(log(Surface->w) / log(2))); // Round up to the nearest power of two
         int h = pow(2, ceil(log(Surface->h) / log(2))); // Round up to the nearest power of two */
 

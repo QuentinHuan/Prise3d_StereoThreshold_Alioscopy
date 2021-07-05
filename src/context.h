@@ -12,7 +12,7 @@ int windowHeight = 1080/downscaling;
 int windowPosx = 1920;
 int windowPosy = 0;
 
-int mousePositionX, mousePositionY;
+glm::vec2 mousePosition;
 bool bUserDetect=false;
 
 //window pointer
@@ -91,7 +91,10 @@ static void event()
       quit();
       break;
     case SDL_MOUSEMOTION:
-      SDL_GetMouseState( &mousePositionX, &mousePositionY );
+      int mouseX, mouseY;
+      SDL_GetMouseState( &mouseX, &mouseY );
+      //(mousePosition.x*2.0f)-0.5f
+      mousePosition=glm::vec2((float)(mouseX)/(float)(windowWidth)*2.0f - 0.5f,(float)(mouseY)/(float)(windowHeight));
       break;
     case SDL_MOUSEBUTTONDOWN:
       bUserDetect=true;
