@@ -5,12 +5,15 @@
 //SDL window
 //--------------------------------------------------------
 //window dimensions
-int downscaling=1;
+int downscaling=2;
 int windowWidth = 1920/downscaling;
 int windowHeight = 1080/downscaling;
 
 int windowPosx = 1920;
 int windowPosy = 0;
+
+int mousePositionX, mousePositionY;
+bool bUserDetect=false;
 
 //window pointer
 SDL_Window *window;
@@ -86,6 +89,15 @@ static void event()
       break;
     case SDL_QUIT:
       quit();
+      break;
+    case SDL_MOUSEMOTION:
+      SDL_GetMouseState( &mousePositionX, &mousePositionY );
+      break;
+    case SDL_MOUSEBUTTONDOWN:
+      bUserDetect=true;
+      break;
+    case SDL_MOUSEBUTTONUP:
+      bUserDetect=false;
       break;
     }
   }

@@ -16,7 +16,6 @@ A minimal OpenGL Cmake project
 #include "texture.h"
 #include "context.h"
 #include "utility.h"
-#include <boost/timer.hpp>
 //--------------------------------------------------------
 //scene
 //--------------------------------------------------------
@@ -47,7 +46,7 @@ unsigned int T_fb[8]; // rendering textures
 unsigned int rbo[8]; // render buffer objects
 
 // plane to render ref texture:
-Mesh ref_plane;
+//Mesh ref_plane;
 Mesh noisy_plane;
 Shader texture_plane_shader;
 Texture T_ref[8]; // ref 8pov images
@@ -66,7 +65,7 @@ Timer patchUpdateTimer;
 //std::string ImageDatabasePath="/home/stagiaire/Bureau/image/8pov";
 std::string ImageDatabasePath="/home/stagiaire/Bureau/image/8pov/square";
 
-std::string sceneList={"8pov_crown"};
+std::string sceneList={"8pov_caustic-view0"};//"8pov_crown"
 int oneSceneDuration=20; // in millisec
 int patchUpdateFrequency=5; // in millisec
 int refValue=100; // image ID
@@ -138,15 +137,15 @@ static void sceneSetup()
     // load mesh
     screen.load(&vertices_screen[0], sizeof(vertices_screen) / sizeof(float),std::string("../shader/fb.vs"), std::string("../shader/glsl_mix_update.fs"), 0);
     // fb screen right
-    ref_plane.load(&vertices[0], sizeof(vertices) / sizeof(float),std::string("../shader/fb.vs"), std::string("../shader/fb.fs"), 0);
+    //ref_plane.load(&vertices[0], sizeof(vertices) / sizeof(float),std::string("../shader/fb.vs"), std::string("../shader/fb.fs"), 0);
     glm::mat4 T = glm::mat4(1.0);
     T=glm::translate(T,glm::vec3(0.5f,0,0));
     T=glm::scale(T,glm::vec3(0.5f,1,1));
-    ref_plane.setTransform(T);
+    //ref_plane.setTransform(T);
     // fb screen left
     noisy_plane.load(&vertices[0], sizeof(vertices) / sizeof(float),std::string("../shader/fb.vs"), std::string("../shader/fb_noise.fs"), 0);
     glm::mat4 T2 = glm::mat4(1.0);
-    T2=glm::translate(T2,glm::vec3(-0.5f,0,0));
+    T2=glm::translate(T2,glm::vec3(-0.0f,0,0));
     T2=glm::scale(T2,glm::vec3(0.5f,1,1));
     noisy_plane.setTransform(T2);
   }
@@ -178,8 +177,8 @@ static void draw(SDL_Window *window)
 
       // draw ref_plane
       //--------------------
-      ref_plane.texture=T_ref[i].ID;
-      ref_plane.draw();
+      //ref_plane.texture=T_ref[i].ID;
+      //ref_plane.draw();
 
       // draw noisy_plane
       //--------------------
@@ -251,7 +250,10 @@ int main(int argc, char *argv[])
       std::cout << "MOVE in position" << patchPos << " NOISE VALUE = "<< noiseValue << std::endl;
     }
 
-
+    if(bUserDetect)
+    {
+      std::cout<< float(mousePositionX)/float(windowWidth) <<" ; "<< float(mousePositionY)/float(windowHeight) <<std::endl;
+    }
     draw(window);
     SDL_GL_SwapWindow(window);
   }
