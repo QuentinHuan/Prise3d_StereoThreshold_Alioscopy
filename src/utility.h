@@ -22,6 +22,13 @@ std::string leadingZeros(int number,int zeros)
 	return std::string(Buffer);
 }
 
+// returns "X=[v.x] Y=[v.y]
+std::string vec2ToString(glm::vec2 v)
+{
+	return "X="+std::to_string(v.x)+" Y="+std::to_string(v.y);
+}
+
+
 // convert patch ID to vec2 (UV space)
 // id range is [1;16]
 glm::vec2 idToVec2(int id)
@@ -98,9 +105,45 @@ std::vector<int> next_stimulus_MLE(std::string sceneName)
 	return result;
 }
 
-// !!!!!!!!!!!! 
-// modify path in python script
-// !!!!!!!!!!!! 
+
+// print experiment result into log files (located in .\P3D\WindowsNoEditor\P3d_Expe1\Saved\Logs)
+// 
+// format :
+// "p3d:p3d_[scene]_[RightOrLeft];[time];[gazePos];[noisePatchPos];[noiseValue];[detect]"
+void log(int showNoiseLeft, int showNoiseRight, std::string sceneName, float time, glm::vec2 gazePos, glm::vec2 noisePatchPos, int noiseValue, int detect)
+{
+	std::ofstream outfile;
+	outfile.open("../log/p3d.log", std::ios_base::app); // append instead of overwrite
+
+	std::string result = "p3d:";
+	result.append(sceneName); // p3d_bathroom
+
+	std::string suffix = "";// _right , _left or none
+	if(showNoiseLeft==1 && showNoiseRight==0) suffix = "_left";
+	if (showNoiseLeft == 0 && showNoiseRight == 1) suffix = "_right";
+	result.append(suffix); 
+
+	result.append(";");
+	result.append(std::to_string(time));
+
+	result.append(";");
+	result.append(vec2ToString(gazePos));
+
+	result.append(";");
+	result.append(vec2ToString(noisePatchPos));
+
+	result.append(";");
+	result.append(std::to_string(noiseValue));
+
+	result.append(";");
+	result.append(std::to_string(detect));
+	// format :
+	// "p3d:p3d_bathroom_right;[time];[gazePos];[noisePatchPos];[noiseValue];[detect]"
+	outfile << result << std::endl; 
+	return;
+}
+
+
 std::string saveExperiment()
 {
 	std::string directory = "../";

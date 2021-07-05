@@ -56,14 +56,13 @@ Texture T_noise[8]; // noisy 8pov images
 int sceneID=-1; // 0 is tutorial
 Timer experimentTimer;
 Timer patchUpdateTimer;
+Timer aquisitionTimer;
+float aquisitionTime=0.01f;
 std::vector<std::string> sceneList;
 std::vector<int> stimulusSet;
-// config variable
-//std::string ImageDatabasePath="/mnt/sda2/image/8pov";
-//std::string ImageDatabasePath="/home/huan/pbrtOut/8pov/png (copy)";
 
-//std::string ImageDatabasePath="/home/stagiaire/Bureau/image/8pov";
-std::string ImageDatabasePath="/home/stagiaire/Bureau/image/8pov/square";
+// config variable
+std::string ImageDatabasePath;
 
 
 // parameters
@@ -279,12 +278,33 @@ static void draw(SDL_Window *window)
     glUseProgram(0);
 }
 
+void setupLogFile()
+{
+  // backup old log/p3d.log file and create a new one
+  std::ifstream input( "../log/p3d.log" );
+  std::string savedDate; getline( input, savedDate );
+  std::string path = "../log/"+savedDate+".log";
+  if(rename("../log/p3d.log", &path[0]) != 0)
+  {
+    std::cout << "!!! error while saving previous .log file" << std::endl;
+  }
+  // create new p3d.log file
+  std::stringstream date;
+  time_t now = time(0);
+  char* dt = ctime(&now); date << dt;
+  std::ofstream outfile ("../log/p3d.log");
+  outfile << date.str() << std::endl;
+  outfile.close();
+  return;
+}
+
 int main(int argc, char *argv[])
 {
   if (!init())
   {
     printf("failed\n");
   }
+  setupLogFile();
 
   glViewport(0, 0, windowWidth, windowHeight);
   srand(10);
@@ -294,6 +314,7 @@ int main(int argc, char *argv[])
   noisy_plane.shader.setVec2("noisePos",idToVec2(patchPos));
   experimentTimer.reset();
   patchUpdateTimer.reset();
+  aquisitionTimer.reset();
   while (1)
   {
     event();
@@ -312,19 +333,26 @@ int main(int argc, char *argv[])
       noisy_plane.shader.setVec2("noisePos",idToVec2(patchPos));
       std::cout << "MOVE in position [" << patchPos << "] ; NOISE VALUE = "<< noiseSPP << std::endl;
     }
-
+    // change scene callback
     if(experimentTimer.elapsed() > oneSceneDuration)
     {
       experimentTimer.reset();
       changeScene();
     }
 
+    // display mouse
     glm::vec2 MouseToPatch_distanceVector = (mousePosition-idToVec2(patchPos));
     float distance = std::max(std::abs(MouseToPatch_distanceVector.x),std::abs(MouseToPatch_distanceVector.y));
     std::cout << distance << std::endl;
     if(distance < 0.125f && bUserDetect && mousePosition.x >=0 && mousePosition.x <=1 && mousePosition.y >=0 && mousePosition.y <=1)
     {
       std::cout << "mouse INSIDE" << std::endl;
+    }
+
+    if(aquisitionTimer.elapsed() > aquisitionTime)
+    {
+      //int showNoiseLeft, int showNoiseRight, std::string sceneName, float time, glm::vec2 gazePos, glm::vec2 noisePatchPos, int noiseValue, int detect
+      log(1,1,sceneList.at(sceneID),experimentTimer.elapsed(),mousePosition,idToVec2(patchPos),noiseSPP,(int)bUserDetect);
     }
 
     draw(window);
