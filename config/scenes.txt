@@ -1,6 +1,0 @@
-Tutorial
-p3d_contemporary-bathroom
-p3d_crown
-p3d_indirect
-p3d_arcsphere
-p3d_caustic-view0
