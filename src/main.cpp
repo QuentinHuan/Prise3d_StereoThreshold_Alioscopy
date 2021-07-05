@@ -67,9 +67,9 @@ std::string ImageDatabasePath="/home/stagiaire/Bureau/image/8pov/square";
 
 
 // parameters
-int oneSceneDuration=20; // in sec
+int oneSceneDuration=15; // in sec
 int patchUpdateFrequency=5; // in sec
-int refSPP=100; // image ID
+int refSPP=1; // image ID
 int noiseSPP=1; // image ID
 int patchPos=1; // patch position in image block ID ([1,16])
 
@@ -248,7 +248,7 @@ static void draw(SDL_Window *window)
 
       // set mousePos and bUserDetect uniforms
       noisy_plane.shader.setInt("bUserDetect",bUserDetect);  
-      noisy_plane.shader.setVec2("mousePos",glm::vec2((float(mousePositionX)/float(windowWidth)*2.0f)-0.5f,float(mousePositionY)/float(windowHeight)));  
+      noisy_plane.shader.setVec2("mousePos",mousePosition);  
       // draw
       glBindVertexArray(noisy_plane.VAO);
       glDrawArrays(GL_TRIANGLES, 0, noisy_plane.vertexCount);
@@ -287,9 +287,11 @@ int main(int argc, char *argv[])
   }
 
   glViewport(0, 0, windowWidth, windowHeight);
-
   srand(10);
   sceneSetup();
+  patchPos=0;
+  noisy_plane.shader.use();
+  noisy_plane.shader.setVec2("noisePos",idToVec2(patchPos));
   experimentTimer.reset();
   patchUpdateTimer.reset();
   while (1)
@@ -309,6 +311,20 @@ int main(int argc, char *argv[])
       noisy_plane.shader.use();
       noisy_plane.shader.setVec2("noisePos",idToVec2(patchPos));
       std::cout << "MOVE in position [" << patchPos << "] ; NOISE VALUE = "<< noiseSPP << std::endl;
+    }
+
+    if(experimentTimer.elapsed() > oneSceneDuration)
+    {
+      experimentTimer.reset();
+      changeScene();
+    }
+
+    glm::vec2 MouseToPatch_distanceVector = (mousePosition-idToVec2(patchPos));
+    float distance = std::max(std::abs(MouseToPatch_distanceVector.x),std::abs(MouseToPatch_distanceVector.y));
+    std::cout << distance << std::endl;
+    if(distance < 0.125f && bUserDetect && mousePosition.x >=0 && mousePosition.x <=1 && mousePosition.y >=0 && mousePosition.y <=1)
+    {
+      std::cout << "mouse INSIDE" << std::endl;
     }
 
     draw(window);
