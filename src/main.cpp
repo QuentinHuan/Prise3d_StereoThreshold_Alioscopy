@@ -17,6 +17,8 @@ A minimal OpenGL Cmake project
 #include "context.h"
 #include "utility.h"
 #include <boost/timer.hpp>
+#include <vector>
+#include <boost/algorithm/string.hpp>
 //--------------------------------------------------------
 //scene
 //--------------------------------------------------------
@@ -54,11 +56,11 @@ Texture T_ref[8]; // ref 8pov images
 Texture T_noise[8]; // noisy 8pov images
 
 // internal state
-int sceneID=0; // 0 is tutorial
+int sceneID=-1; // 0 is tutorial
 Timer experimentTimer;
 Timer patchUpdateTimer;
-
-
+std::vector<std::string> sceneList;
+std::vector<int> stimulusSet;
 // config variable
 //std::string ImageDatabasePath="/mnt/sda2/image/8pov";
 //std::string ImageDatabasePath="/home/huan/pbrtOut/8pov/png (copy)";
@@ -66,22 +68,38 @@ Timer patchUpdateTimer;
 //std::string ImageDatabasePath="/home/stagiaire/Bureau/image/8pov";
 std::string ImageDatabasePath="/home/stagiaire/Bureau/image/8pov/square";
 
-std::string sceneList={"8pov_crown"};
-int oneSceneDuration=20; // in millisec
-int patchUpdateFrequency=5; // in millisec
-int refValue=100; // image ID
-int noiseValue=1; // image ID
+
+// parameters
+int oneSceneDuration=20; // in sec
+int patchUpdateFrequency=5; // in sec
+int refSPP=100; // image ID
+int noiseSPP=1; // image ID
 int patchPos=1; // patch position in image block ID ([1,16])
 
 // change the noise texture displayed on noisePlane
 static void loadNoise(int level)
 {
+  level = std::min(level,refSPP);
+  std::string sceneName = sceneList.at(sceneID);
   for (int i = 0; i < 8; i++)
   {
-    T_noise[i].load(ImageDatabasePath+"/p3d_crown-0"+std::to_string(i+1)+"/p3d_crown-0"+std::to_string(i+1)+"_"+leadingZeros(level,5)+".png");
+    std::string folderName = sceneName+std::string("-")+leadingZeros(i+1,2);
+    T_noise[i].load(ImageDatabasePath+std::string("/")+folderName+std::string("/")+folderName+std::string("_")+leadingZeros(level,5)+std::string(".png"));
   }
 }
 
+// change the reference texture displayed on refPlane
+static void loadRef()
+{
+  std::string sceneName = sceneList.at(sceneID);
+  for (int i = 0; i < 8; i++)
+  {
+    std::string folderName = sceneName+std::string("-")+leadingZeros(i+1,2);;
+    T_ref[i].load(ImageDatabasePath+"/"+folderName+"/"+folderName+"_"+leadingZeros(refSPP,5)+".png");
+  }
+}
+
+// parse config/config.ini and set parameters accordingly
 static void parseConfigFile()
 {
   std::ifstream input( "../config/config.ini" );
@@ -100,17 +118,57 @@ static void parseConfigFile()
       if(param == "ImagePath")
       {ImageDatabasePath=value;}
       if(param == "referenceNoiseValue")
-      {refValue=stoi(value);}
+      {refSPP=stoi(value);}
       }
     }
   }
 }
 
+// parse config/scenes.ini and put the result in sceneList vector
+static bool parseSceneFile()
+{
+  std::ifstream input( "../config/scenes.ini" );
+  for( std::string line; getline( input, line ); )
+  {
+    if(line.find("#"))// filter out comments
+    {
+      line.pop_back();
+      sceneList.push_back(line);
+    }
+  }
+  if (sceneList.size() >= 1)
+  {return true;}
+  else
+  {return false;}
+}
+
+// change the scene:
+// save results, select next scene and compute the new stimulus set
+static void changeScene()
+{
+  //saveExperiment()
+  // change scene ID and load corresponding images
+  sceneID = (sceneID + 1) % sceneList.size();
+  loadRef();
+  loadNoise(1);
+  std::cout << "Change scene:" << sceneList.at(sceneID)<<std::endl;
+
+  stimulusSet = next_stimulus_MLE("p3d_crown");
+  std::cout<<"next stimulus set:"<<std::endl;
+  for (int i = 0; i < stimulusSet.size(); i++)
+  {
+    std::cout<<stimulusSet.at(i)<<",";
+  }
+  std::cout<<std::endl;
+}
+
 static void sceneSetup()
 {
-  srand(10);
-  // parse config file
+  // parse config files
   parseConfigFile();
+  if(!parseSceneFile())
+  {std::cout<<"!!! failed to load scene list"<<std::endl;}
+
   // setting up the 8 POV framebuffers
   for (int i = 0; i < 8; i++)
   {
@@ -134,30 +192,26 @@ static void sceneSetup()
     // check if framebuffer is complete
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
       std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete! " << i << "/8" << std::endl;
-    
-    // load mesh
-    screen.load(&vertices_screen[0], sizeof(vertices_screen) / sizeof(float),std::string("../shader/fb.vs"), std::string("../shader/glsl_mix_update.fs"), 0);
-    // fb screen right
-    ref_plane.load(&vertices[0], sizeof(vertices) / sizeof(float),std::string("../shader/fb.vs"), std::string("../shader/fb.fs"), 0);
-    glm::mat4 T = glm::mat4(1.0);
-    T=glm::translate(T,glm::vec3(0.5f,0,0));
-    T=glm::scale(T,glm::vec3(0.5f,1,1));
-    ref_plane.setTransform(T);
-    // fb screen left
-    noisy_plane.load(&vertices[0], sizeof(vertices) / sizeof(float),std::string("../shader/fb.vs"), std::string("../shader/fb_noise.fs"), 0);
-    glm::mat4 T2 = glm::mat4(1.0);
-    T2=glm::translate(T2,glm::vec3(-0.5f,0,0));
-    T2=glm::scale(T2,glm::vec3(0.5f,1,1));
-    noisy_plane.setTransform(T2);
   }
-  // image loading
-  for (int i = 0; i < 8; i++)
-  {
-    // loading reference textures
-    T_ref[i].load(ImageDatabasePath+"/p3d_crown-0"+std::to_string(i+1)+"/p3d_crown-0"+std::to_string(i+1)+"_"+leadingZeros(refValue,5)+".png");
-  }
-  loadNoise(1);
+  // load mesh
+  screen.load(&vertices_screen[0], sizeof(vertices_screen) / sizeof(float),std::string("../shader/fb.vs"), std::string("../shader/glsl_mix_update.fs"), 0);
+  // fb screen right
+  ref_plane.load(&vertices[0], sizeof(vertices) / sizeof(float),std::string("../shader/fb.vs"), std::string("../shader/fb.fs"), 0);
+  glm::mat4 T = glm::mat4(1.0);
+  T=glm::translate(T,glm::vec3(0.5f,0,0));
+  T=glm::scale(T,glm::vec3(0.5f,1,1));
+  ref_plane.setTransform(T);
+  // fb screen left
+  noisy_plane.load(&vertices[0], sizeof(vertices) / sizeof(float),std::string("../shader/fb.vs"), std::string("../shader/fb_noise.fs"), 0);
+  glm::mat4 T2 = glm::mat4(1.0);
+  T2=glm::translate(T2,glm::vec3(-0.0f,0,0));
+  T2=glm::scale(T2,glm::vec3(1.0f,1,1));
+  noisy_plane.setTransform(T2);
 
+  // initialise scene
+  changeScene();
+
+  // initial noise Pos
   noisy_plane.shader.setVec2("noisePos",idToVec2(11));
 
   // unbind framebuffer
@@ -179,7 +233,7 @@ static void draw(SDL_Window *window)
       // draw ref_plane
       //--------------------
       ref_plane.texture=T_ref[i].ID;
-      ref_plane.draw();
+      //ref_plane.draw();
 
       // draw noisy_plane
       //--------------------
@@ -232,6 +286,7 @@ int main(int argc, char *argv[])
 
   glViewport(0, 0, windowWidth, windowHeight);
 
+  srand(10);
   sceneSetup();
   experimentTimer.reset();
   patchUpdateTimer.reset();
@@ -239,18 +294,29 @@ int main(int argc, char *argv[])
   {
     event();
     
+    // patch update callback
     if (patchUpdateTimer.elapsed() > patchUpdateFrequency )
     {
       patchUpdateTimer.reset();
-      noiseValue=(rand()%refValue)+1;
-      loadNoise(noiseValue);
+
+      // move patch and change noise level
       patchPos=(rand()%16)+1;
+      //noiseSPP=stimulusSet.at(patchPos-1);// select corresponding noise value
+      noiseSPP=5;
+      loadNoise(noiseSPP);
       noisy_plane.shader.use();
       noisy_plane.shader.setVec2("noisePos",idToVec2(patchPos));
-      
-      std::cout << "MOVE in position" << patchPos << " NOISE VALUE = "<< noiseValue << std::endl;
+      std::cout << "MOVE in position [" << patchPos << "] ; NOISE VALUE = "<< noiseSPP << std::endl;
     }
 
+    // change scene callback
+    if(experimentTimer.elapsed() > oneSceneDuration)
+    {
+      //reset timers
+      experimentTimer.reset();
+      patchUpdateTimer.reset();
+      changeScene();
+    }
 
     draw(window);
     SDL_GL_SwapWindow(window);

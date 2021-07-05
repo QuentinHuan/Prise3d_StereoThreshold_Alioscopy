@@ -6,6 +6,10 @@
 #include <stdlib.h>
 #include <chrono>
 #include "lodepng.h"
+#include <stdio.h>
+#include <iostream>
+#include <cstdlib>
+#include <cstdio>
 
 // add leading zeros to a number
 // ex ==> leadingZeros(5,3) = "005"
@@ -52,9 +56,75 @@ static size_t str_split(const std::string &txt, std::vector<std::string> &strs, 
 		return strs.size();
 	}
 
-auto time()
+/*
+ return next stimuli values (in [1,100]^16) for scene sceneName
+ values are coma separated
+ use the results files in ./data to compute the new value 
+ */
+std::vector<int> next_stimulus_MLE(std::string sceneName)
 {
- 	return std::chrono::high_resolution_clock::now();
+	std::vector<int> result = std::vector<int>();
+	//FGenericPlatformMisc::OsExecute(TEXT("python"), TEXT("python E : /git/Prise3D_StereoThreshold/DataProcessing/simulation_adaptative_sampling.py '250; 1'"));
+	std::string directory = "../";// root directory
+	std::string cmd = "python3 "+ directory + "script/ComputeNewStimulusSet.py " + sceneName + " && exit";
+
+	const int MAX_BUFFER = 2048;
+	char buffer[MAX_BUFFER];
+
+	// execute python script in a terminal
+	
+	FILE* in = popen(cmd.c_str(), "r");
+
+	// pipe the terminal output into "std::string out"
+	std::string out= std::string(cmd);
+	if (in) {
+		while (!feof(in))
+		{
+			if (fgets(buffer, MAX_BUFFER, in) != NULL)
+			{
+				out = std::string(buffer);
+			}
+		}
+		pclose(in);
+	}
+	std::vector<std::string> split = std::vector<std::string>();
+    str_split(out,split,',');
+
+	for (int i = 0; i < split.size(); i++)
+	{
+		result.push_back(stoi(split.at(i)));
+	}
+
+	return result;
+}
+
+// !!!!!!!!!!!! 
+// modify path in python script
+// !!!!!!!!!!!! 
+std::string saveExperiment()
+{
+	std::string directory = "../";
+	std::string cmd = "python3 " + directory + "script/ExperimentAnalysis.py" + " && exit";
+
+	FILE* in = popen(cmd.c_str(), "r");
+
+	const int MAX_BUFFER = 2048;
+	char buffer[MAX_BUFFER];
+
+	// pipe the terminal output into "std::string out"
+	std::string out = std::string(cmd);
+	if (in) {
+		while (!feof(in))
+		{
+			if (fgets(buffer, MAX_BUFFER, in) != NULL)
+			{
+				out = std::string(buffer);
+			}
+		}
+		pclose(in);
+	}
+
+	return out;
 }
 
 
