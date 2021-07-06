@@ -1,26 +1,21 @@
-minimal opengl project
+Prise3D stereo thresholds experiment : works on alioscopy autostereoscopic screen
+This program was made to mesure perceptive noise thresholds for MonteCarlo pathtraced images.
 
-use SDL2 and glew
+uses: OpenGL, SDL2, glad,
+additional : lodepng (in /include), glm math lib
 
-#sdl2 install command
-sudo apt-get install libsdl2-2.0
-sudo apt install libsdl2-dev
+# Dependencies installation:
 
-#glew install command
-sudo apt-get install -y libglew-dev
+sdl2 install command
+```sudo apt-get install libsdl2-2.0
+sudo apt install libsdl2-dev```
 
-#glm math lib
-sudo apt install libglm-dev
+glm install command
+```sudo apt install libglm-dev```
 
-#############################
-##      compilation
-#############################
+python script in script folder:
+install scripts:
+* ```get-pip.py```: install pip on computer
+* ```install.sh```: bash script to install all the dependencies
 
-#simple compile cpp
-g++ src/main.cpp -o bin/main
-
-#compile with headers in 'include' folder
-g++ src/main.cpp -I include -o bin/main
-
-#compile with headers in 'include' folder and libraries
-g++ src/main.cpp -I include -o bin/main
+(more info [here](https://github.com/QuentinHuan/Prise3D_StereoThreshold/tree/main/DataProcessing))

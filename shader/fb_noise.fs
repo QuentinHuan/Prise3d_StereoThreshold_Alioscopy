@@ -10,6 +10,8 @@ uniform vec2 noisePos;
 
 uniform vec2 mousePos;
 uniform int bUserDetect;
+uniform float variableMouseRadius;
+
 
 void main()
 {   
@@ -30,7 +32,7 @@ void main()
     {
         distanceVec = abs(mousePos-TexCoords);
         distance = max(distanceVec.x,distanceVec.y);
-        if(distance<0.005f)
+        if(distance<0.005f*(1+variableMouseRadius))
         {
             FragColor = vec4(0,1,0,1);
         }
