@@ -125,7 +125,7 @@ public:
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 
-    void generateText(std::string txt)
+    void generateText(std::string txt, int wrapLenght)
     {
         //this opens a font style and sets a size
         TTF_Font* Sans = TTF_OpenFont("../font/DejaVuSans.ttf", 24);
@@ -137,7 +137,7 @@ public:
         // as TTF_RenderText_Solid could only be used on
         // SDL_Surface then you have to create the surface first
         SDL_Surface* surfaceMessage =
-            TTF_RenderText_Solid(Sans, txt.c_str(), White); 
+            TTF_RenderText_Blended_Wrapped(Sans, txt.c_str(), White,wrapLenght); 
         
         loadFromSDL_Surface(surfaceMessage);
 

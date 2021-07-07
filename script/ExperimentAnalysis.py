@@ -16,5 +16,5 @@ def get_script_path():
 wdir=get_script_path()
 os.chdir(wdir)
 print("WORKING DIR ="+wdir)
-main.process_one_log(wdir+"../logs","P3d.log")
+main.process_one_log(wdir+"/../logs","p3d.log")
 print("SAVED")
