@@ -1,5 +1,6 @@
 #include <glad/glad.h>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 
 //--------------------------------------------------------
 //SDL window
@@ -26,12 +27,20 @@ static bool init()
     printf("%s - SDL could not initialize! SDL Error: %s\n", __FUNCTION__, SDL_GetError());
     return false;
   }
+  //SDL_ttf init
+  if (TTF_Init() < 0)
+  {
+    printf("%s - SDL could not initialize! SDL Error: %s\n", __FUNCTION__, SDL_GetError());
+    return false;
+  }
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
   SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
   SDL_GL_SetSwapInterval(1);
+
+
 
   //SDL window creation
   Uint32 windowFlags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;

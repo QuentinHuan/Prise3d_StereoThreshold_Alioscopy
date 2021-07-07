@@ -44,6 +44,9 @@ float vertices_noisy_plane[] = {
 Mesh screen;
 Shader alioscopy_Shader;
 
+// instructions
+Mesh instruction_plane;
+
 // framebuffers
 unsigned int fb[8]; // framebuffers
 unsigned int T_fb[8]; // rendering textures
@@ -53,6 +56,7 @@ unsigned int rbo[8]; // render buffer objects
 Mesh noisy_plane;
 Texture T_ref[8]; // ref 8pov images
 Texture T_noise[8]; // noisy 8pov images
+Texture T_instruction;
 
 // internal state
 Timer experimentTimer;
@@ -225,6 +229,15 @@ static void sceneSetup()
     // load meshes
     screen.load(&vertices_screen[0], sizeof(vertices_screen) / sizeof(float),std::string("../shader/fb.vs"), std::string("../shader/glsl_mix_update.fs"), 0);
     
+    instruction_plane.load(&vertices_noisy_plane[0], sizeof(vertices_noisy_plane) / sizeof(float),std::string("../shader/fb.vs"), std::string("../shader/fb.fs"), 0);
+    glm::mat4 T1 = glm::mat4(1.0);
+    T1=glm::translate(T1,glm::vec3(-0.0f,0,0));
+    T1=glm::scale(T1,glm::vec3(0.5f,0.5,1));
+    instruction_plane.setTransform(T1);
+
+    T_instruction.generateText("oui bonjour");
+
+
     noisy_plane.load(&vertices_noisy_plane[0], sizeof(vertices_noisy_plane) / sizeof(float),std::string("../shader/fb.vs"), std::string("../shader/fb_noise.fs"), 0);
     glm::mat4 T2 = glm::mat4(1.0);
     T2=glm::translate(T2,glm::vec3(-0.0f,0,0));
@@ -293,6 +306,20 @@ static void draw(SDL_Window *window)
       // draw noisy_plane
       glBindVertexArray(noisy_plane.VAO);
       glDrawArrays(GL_TRIANGLES, 0, noisy_plane.vertexCount);
+      glBindVertexArray(0);
+      glUseProgram(0);
+
+
+      // draw instruction plane
+
+      //set instruction_plane texture
+      glActiveTexture(GL_TEXTURE0);
+      glBindTexture(GL_TEXTURE_2D, T_instruction.ID);
+      instruction_plane.shader.setInt("screenTexture",0);  
+
+      // draw instruction_plane
+      glBindVertexArray(instruction_plane.VAO);
+      glDrawArrays(GL_TRIANGLES, 0, instruction_plane.vertexCount);
       glBindVertexArray(0);
       glUseProgram(0);
     }
