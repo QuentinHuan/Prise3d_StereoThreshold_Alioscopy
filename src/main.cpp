@@ -244,18 +244,9 @@ static void sceneSetup()
     instruction_plane.load(&vertices_noisy_plane[0], sizeof(vertices_noisy_plane) / sizeof(float),std::string("../shader/fb.vs"), std::string("../shader/fb.fs"), 0);
     glm::mat4 T1 = glm::mat4(1.0);
     T1=glm::translate(T1,glm::vec3(-0.0f,0,0));
-<<<<<<< HEAD
-    T1=glm::scale(T1,glm::vec3(0.5f,0.5,1));
-    instruction_plane.setTransform(T1);
-
-    T_instruction.generateText("oui bonjour");
-
-
-=======
     T1=glm::scale(T1,glm::vec3(1,1,1));
     instruction_plane.setTransform(T1);
 
->>>>>>> 4b6926db33bc69abfac11475807d7650fd765932
     noisy_plane.load(&vertices_noisy_plane[0], sizeof(vertices_noisy_plane) / sizeof(float),std::string("../shader/fb.vs"), std::string("../shader/fb_noise.fs"), 0);
     glm::mat4 T2 = glm::mat4(1.0);
     T2=glm::translate(T2,glm::vec3(-0.0f,0,0));
