@@ -145,6 +145,8 @@ void log(int showNoiseLeft, int showNoiseRight, std::string sceneName, float tim
 }
 
 
+// save experiment result contained in ../logs/p3d.log
+// results are saved in ../Prise3d_StereoThreshold_DataAnalysis/data
 std::string saveExperiment()
 {
 	std::string directory = "../";
