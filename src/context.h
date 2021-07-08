@@ -1,6 +1,7 @@
 #include <glad/glad.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
+#include "utility.h"
 
 //--------------------------------------------------------
 //SDL window
@@ -15,6 +16,8 @@ int windowPosy = 0;
 
 glm::vec2 mousePosition;
 bool bUserDetect=false;
+
+bool bSpaceKeyDown=false;
 
 //window pointer
 SDL_Window *window;
@@ -67,6 +70,9 @@ static bool init()
 
 static void quit()
 {
+  saveExperiment();
+  std::cout << "experiment saved" << std::endl;
+  std::cout << "quit" << std::endl;
   SDL_Quit();
   exit(0);
 }
@@ -77,6 +83,22 @@ static void handle_key_down(SDL_Keysym *keysym)
   {
   case SDLK_ESCAPE:
     quit();
+    break;
+  case SDLK_SPACE:
+    bSpaceKeyDown=true;
+    break;
+
+  default:
+    break;
+  }
+}
+
+static void handle_key_up(SDL_Keysym *keysym)
+{
+  switch (keysym->sym)
+  {
+  case SDLK_SPACE:
+    bSpaceKeyDown=false;
     break;
 
   default:
@@ -90,11 +112,13 @@ static void event()
 
   while (SDL_PollEvent(&event))
   {
-
     switch (event.type)
     {
     case SDL_KEYDOWN:
       handle_key_down(&event.key.keysym);
+      break;
+    case SDL_KEYUP:
+      handle_key_up(&event.key.keysym);
       break;
     case SDL_QUIT:
       quit();
@@ -102,7 +126,6 @@ static void event()
     case SDL_MOUSEMOTION:
       int mouseX, mouseY;
       SDL_GetMouseState( &mouseX, &mouseY );
-      //(mousePosition.x*2.0f)-0.5f
       mousePosition=glm::vec2((float)(mouseX)/(float)(windowWidth)*2.0f - 0.5f,(float)(mouseY)/(float)(windowHeight));
       break;
     case SDL_MOUSEBUTTONDOWN:

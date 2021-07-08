@@ -1,3 +1,4 @@
+#pragma once
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -74,7 +75,7 @@ std::vector<int> next_stimulus_MLE(std::string sceneName)
 	//FGenericPlatformMisc::OsExecute(TEXT("python"), TEXT("python E : /git/Prise3D_StereoThreshold/DataProcessing/simulation_adaptative_sampling.py '250; 1'"));
 	std::string directory = "../";// root directory
 	std::string cmd = "python3 "+ directory + "script/ComputeNewStimulusSet.py " + sceneName + " && exit";
-
+	std::cout << cmd << std::endl;
 	const int MAX_BUFFER = 2048;
 	char buffer[MAX_BUFFER];
 
@@ -109,11 +110,11 @@ std::vector<int> next_stimulus_MLE(std::string sceneName)
 // print experiment result into log files (located in .\P3D\WindowsNoEditor\P3d_Expe1\Saved\Logs)
 // 
 // format :
-// "p3d:p3d_[scene]_[RightOrLeft];[time];[gazePos];[noisePatchPos];[noiseValue];[detect]"
+// "p3d:p3d_[scene]_[RightOrLeft];[time];[noisePatchPos];[gazePos];[noiseValue];[detect]"
 void log(int showNoiseLeft, int showNoiseRight, std::string sceneName, float time, glm::vec2 gazePos, glm::vec2 noisePatchPos, int noiseValue, int detect)
 {
 	std::ofstream outfile;
-	outfile.open("../log/p3d.log", std::ios_base::app); // append instead of overwrite
+	outfile.open("../logs/p3d.log", std::ios_base::app); // append instead of overwrite
 
 	std::string result = "p3d:";
 	result.append(sceneName); // p3d_bathroom
@@ -127,10 +128,10 @@ void log(int showNoiseLeft, int showNoiseRight, std::string sceneName, float tim
 	result.append(std::to_string(time));
 
 	result.append(";");
-	result.append(vec2ToString(gazePos));
+	result.append(vec2ToString(noisePatchPos));
 
 	result.append(";");
-	result.append(vec2ToString(noisePatchPos));
+	result.append(vec2ToString(gazePos));
 
 	result.append(";");
 	result.append(std::to_string(noiseValue));

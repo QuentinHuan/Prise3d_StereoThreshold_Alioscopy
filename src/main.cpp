@@ -67,15 +67,17 @@ std::vector<std::string> sceneList; // scenelist loaded from config/scenes.ini
 std::vector<int> stimulusSet; // stimulus for each block, computed by script/ComputeNewStimulusSet.py when the scene is loaded
 int sceneID=-1; // 0 is tutorial
 float aquisitionTime=0.01f; // save data to log every x seconds
-int patchPos=0; // patch position in image block ID ([1,16]) ; 0 is outside of the plane
+int patchPos=0; // patch position in image block ID ([1,16]) ; -1 is outside of the plane
 int noiseSPP=1; // image ID
-
+bool bInExperiment = false;
 // parameters ==> change them in config/config.ini
 std::string ImageDatabasePath;
 int oneSceneDuration=15; // in sec
 int patchUpdateFrequency=5; // in sec
 int refSPP=1; // image ID
 
+int patchPosList[] = {13,2,3,16,5,9,14,8,6,12,11,10,1,7,15,4};
+int patchLoop=0;
 //--------------------
 // Texture management
 //--------------------
@@ -125,6 +127,10 @@ static void parseConfigFile()
       {ImageDatabasePath=value;}
       if(param == "referenceNoiseValue")
       {refSPP=stoi(value);}
+      if(param=="oneSceneDuration")
+      {oneSceneDuration=stoi(value);}
+      if(param=="patchUpdateFrequency")
+      {patchUpdateFrequency=stoi(value);}
       }
     }
   }
@@ -152,10 +158,10 @@ static bool parseSceneFile()
 void setupLogFile()
 {
   // open previous file, read first line (date) and rename it "date.log"
-  std::ifstream input( "../log/p3d.log" );
+  std::ifstream input( "../logs/p3d.log" );
   std::string savedDate; getline( input, savedDate );
-  std::string path = "../log/"+savedDate+".log";
-  if(rename("../log/p3d.log", &path[0]) != 0)
+  std::string path = "../logs/"+savedDate+".log";
+  if(rename("../logs/p3d.log", &path[0]) != 0)
   {
     std::cout << "!!! error while saving previous .log file" << std::endl;
   }
@@ -163,7 +169,7 @@ void setupLogFile()
   std::stringstream date;
   time_t now = time(0);
   char* dt = ctime(&now); date << dt;
-  std::ofstream outfile ("../log/p3d.log");
+  std::ofstream outfile ("../logs/p3d.log");
   outfile << date.str() << std::endl;
   outfile.close();
   return;
@@ -174,22 +180,28 @@ void setupLogFile()
 //-----------------
 // change the scene:
 // save results, select next scene and compute the new stimulus set
-static void changeScene()
+static int changeScene()
 {
   //saveExperiment()
   // change scene ID and load corresponding images
-  sceneID = (sceneID + 1) % sceneList.size();
+  sceneID = (sceneID + 1);
+
+  if(sceneID >= sceneList.size())
+  {std::cout << "changeScene() return -1" << std::endl;
+    return -1;}
+
   loadRef();
   loadNoise(1);
   std::cout << "Change scene:" << sceneList.at(sceneID)<<std::endl;
 
-  stimulusSet = next_stimulus_MLE("p3d_crown");
+  stimulusSet = next_stimulus_MLE(sceneList.at(sceneID));
   std::cout<<"next stimulus set:"<<std::endl;
   for (int i = 0; i < stimulusSet.size(); i++)
   {
     std::cout<<stimulusSet.at(i)<<",";
   }
   std::cout<<std::endl;
+  return 1;
 }
 
 //-----------------
@@ -232,12 +244,18 @@ static void sceneSetup()
     instruction_plane.load(&vertices_noisy_plane[0], sizeof(vertices_noisy_plane) / sizeof(float),std::string("../shader/fb.vs"), std::string("../shader/fb.fs"), 0);
     glm::mat4 T1 = glm::mat4(1.0);
     T1=glm::translate(T1,glm::vec3(-0.0f,0,0));
+<<<<<<< HEAD
     T1=glm::scale(T1,glm::vec3(0.5f,0.5,1));
     instruction_plane.setTransform(T1);
 
     T_instruction.generateText("oui bonjour");
 
 
+=======
+    T1=glm::scale(T1,glm::vec3(1,1,1));
+    instruction_plane.setTransform(T1);
+
+>>>>>>> 4b6926db33bc69abfac11475807d7650fd765932
     noisy_plane.load(&vertices_noisy_plane[0], sizeof(vertices_noisy_plane) / sizeof(float),std::string("../shader/fb.vs"), std::string("../shader/fb_noise.fs"), 0);
     glm::mat4 T2 = glm::mat4(1.0);
     T2=glm::translate(T2,glm::vec3(-0.0f,0,0));
@@ -288,7 +306,7 @@ static void draw(SDL_Window *window)
       noisy_plane.shader.setVec2("mousePos",mousePosition);  
 
       // while in tutorial pulsation mouse cursor when hovering noise patch
-      if(sceneList.at(sceneID) != "p3d_tutorial")
+      if(sceneList.at(sceneID) == "p3d_tutorial")
       {
         glm::vec2 MouseToPatch_distanceVector = (mousePosition-idToVec2(patchPos));
         float distance = std::max(std::abs(MouseToPatch_distanceVector.x),std::abs(MouseToPatch_distanceVector.y));
@@ -303,25 +321,30 @@ static void draw(SDL_Window *window)
         }
       }
 
-      // draw noisy_plane
-      glBindVertexArray(noisy_plane.VAO);
-      glDrawArrays(GL_TRIANGLES, 0, noisy_plane.vertexCount);
-      glBindVertexArray(0);
-      glUseProgram(0);
+      if(bInExperiment) // Instructions hidden, draw 8pov images
+      {
+        // draw noisy_plane
+        glBindVertexArray(noisy_plane.VAO);
+        glDrawArrays(GL_TRIANGLES, 0, noisy_plane.vertexCount);
+        glBindVertexArray(0);
+        glUseProgram(0);
+      }
+      else // show instructions
+      {
+        // draw instruction plane
 
+        //set instruction_plane texture
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, T_instruction.ID);
+        instruction_plane.shader.use();
+        instruction_plane.shader.setInt("screenTexture",0);  
 
-      // draw instruction plane
-
-      //set instruction_plane texture
-      glActiveTexture(GL_TEXTURE0);
-      glBindTexture(GL_TEXTURE_2D, T_instruction.ID);
-      instruction_plane.shader.setInt("screenTexture",0);  
-
-      // draw instruction_plane
-      glBindVertexArray(instruction_plane.VAO);
-      glDrawArrays(GL_TRIANGLES, 0, instruction_plane.vertexCount);
-      glBindVertexArray(0);
-      glUseProgram(0);
+        // draw instruction_plane
+        glBindVertexArray(instruction_plane.VAO);
+        glDrawArrays(GL_TRIANGLES, 0, instruction_plane.vertexCount);
+        glBindVertexArray(0);
+        glUseProgram(0);
+      }
     }
 
     // activate frame buffer 0: draw to screen
@@ -365,48 +388,88 @@ int main(int argc, char *argv[])
   aquisitionTimer.reset();
   tutorialTimer.reset();
 
-  // main experiment loop
-  while (1)
+  int run = 0;
+  // when experiment is done, loop to main menu
+  while(1)
   {
-    event();
+    // instruction menu
+    std::string exitMsg="appuyez sur [Esc] pour sauvegarder les resultats";
+    std::string launchMsg="appuyez sur [espace] pour lancer";
+    std::string addMsg;
+    if(run>=1) addMsg = exitMsg;
+    else addMsg = launchMsg;
+    T_instruction.generateText("Les instructions ici\n et la \n et la"+std::string(30,'\n')+addMsg,windowWidth/2);
 
-    //-------------------
-    //  timers callback
-    //-------------------
-    // patch update callback
-    if (patchUpdateTimer.elapsed() > patchUpdateFrequency )
+    while (1)
     {
-      patchUpdateTimer.reset();
-
-      // move patch and change noise level
-      patchPos=(rand()%16)+1;
-      if(sceneList.at(sceneID) != "p3d_tutorial")// use python script to choose new noise levels
+      event();
+      draw(window);
+      if(bSpaceKeyDown && run==0)
       {
-        //noiseSPP=stimulusSet.at(patchPos-1);// select corresponding noise value
-        noiseSPP=5; // for test
+        break;
       }
-      else// set noise to 0 spp for tutorial
-      {noiseSPP=1;}
-
-      loadNoise(noiseSPP);
-      noisy_plane.shader.use();
-      noisy_plane.shader.setVec2("noisePos",idToVec2(patchPos));
-      std::cout << "MOVE in position [" << patchPos << "] ; NOISE VALUE = "<< noiseSPP << std::endl;
+      SDL_GL_SwapWindow(window);
     }
-    // change scene callback
-    if(experimentTimer.elapsed() > oneSceneDuration)
+
+    std::cout << "start experiment" << std::endl;
+    bInExperiment=true;
+    run++;
+    // main experiment loop
+    while (1)
     {
-      experimentTimer.reset();
-      changeScene();
-    }
-    // aquisition callback
-    if(aquisitionTimer.elapsed() > aquisitionTime)
-      {log(1,1,sceneList.at(sceneID),experimentTimer.elapsed(),mousePosition,idToVec2(patchPos),noiseSPP,(int)bUserDetect);}
-    
-    draw(window);
-    SDL_GL_SwapWindow(window);
-  }
+      event();
 
+      //-------------------
+      //  timers callback
+      //-------------------
+      // patch update callback
+      if (patchUpdateTimer.elapsed() > patchUpdateFrequency )
+      {
+        patchUpdateTimer.reset();
+
+        patchPos=patchPosList[(patchLoop%16)];
+        patchLoop=patchLoop+1; // next patch position
+
+        if(sceneList.at(sceneID) != "p3d_tutorial")// use python script to choose new noise levels
+        {
+          noiseSPP=stimulusSet.at(patchPos-1);// select corresponding noise value
+          //noiseSPP=5; // for test
+        }
+        else// set noise to 0 spp for tutorial
+        {noiseSPP=1;}
+
+        loadNoise(noiseSPP);
+        noisy_plane.shader.use();
+        noisy_plane.shader.setVec2("noisePos",idToVec2(patchPos));
+        std::cout << "MOVE in position [" << patchPos << "] ; NOISE VALUE = "<< noiseSPP << std::endl;
+      }
+      // change scene callback
+      if(experimentTimer.elapsed() > oneSceneDuration)
+      {
+        experimentTimer.reset();
+        patchUpdateTimer.reset();
+        patchPos = -1; // hide block
+        noisy_plane.shader.use();
+        noisy_plane.shader.setVec2("noisePos",idToVec2(patchPos));
+        std::cout << "MOVE in position [" << patchPos << "] ; NOISE VALUE = "<< noiseSPP << std::endl;
+
+        // quit when scenes are exhausted
+        if(changeScene() == -1)
+        {
+          break;
+        }
+      }
+      // aquisition callback
+      if(aquisitionTimer.elapsed() > aquisitionTime && patchPos > 0)
+        {log(1,1,sceneList.at(sceneID),experimentTimer.elapsed(),mousePosition,idToVec2(patchPos),noiseSPP,(int)bUserDetect);}
+      
+      draw(window);
+      SDL_GL_SwapWindow(window);
+    }
+    std::cout << "end of experiement" << std::endl;
+    sceneID=0;
+    bInExperiment=false;
+  }
   // delete framebuffers 
   for (int i = 0; i < 8; i++)
   {

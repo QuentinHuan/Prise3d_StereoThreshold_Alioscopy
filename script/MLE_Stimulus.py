@@ -121,9 +121,9 @@ def test_MLE_procedure(B,N,bShowPlots):
 
 # generate next stimulus given dataX and dataY
 def next_stimulus_MLE(dataX,dataY):
-    # experiment beginning: first stimulus is in sampling space center
+    # experiment beginning: first stimulus will be 10 (low value, to make first experiments easier)
     if len(dataX)==0:
-        return 250
+        return 10
     else:
         # make sure it's a float32 array
         dataX=np.asarray(dataX,dtype=np.float32)
