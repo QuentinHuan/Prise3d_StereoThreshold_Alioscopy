@@ -1,1 +1,0 @@
-python3 E:\git\Prise3D_StereoThreshold\DataProcessing\simulation_adaptative_sampling.py "250;1"
