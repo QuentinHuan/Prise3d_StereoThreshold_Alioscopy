@@ -1,0 +1,4 @@
+[submodule "Prise3d_StereoThreshold_DataAnalysis"]
+	path = Prise3d_StereoThreshold_DataAnalysis
+	url = https://github.com/QuentinHuan/Prise3d_StereoThreshold_DataAnalysis
+	branch = master

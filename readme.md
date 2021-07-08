@@ -13,6 +13,12 @@ sudo apt install libsdl2-dev``
 glm install command
 ``sudo apt install libglm-dev``
 
+SDL2 TTF install command
+``sudo apt-get install libsdl2-ttf-dev``
+
+lib Freetype install command
+``sudo apt-get install libfreetype6-dev``
+
 python script in script folder:
 install scripts:
 * ```get-pip.py```: install pip on computer
