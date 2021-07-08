@@ -138,7 +138,7 @@ public:
         // SDL_Surface then you have to create the surface first
         SDL_Surface* surfaceMessage =
             TTF_RenderText_Blended_Wrapped(Sans, txt.c_str(), White,wrapLenght); 
-        
+
         loadFromSDL_Surface(surfaceMessage);
 
         // Don't forget to free your surface and texture

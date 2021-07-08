@@ -273,7 +273,7 @@ static void draw(SDL_Window *window)
       // activate frame buffer [i]
       //--------------------
       glBindFramebuffer(GL_FRAMEBUFFER, fb[i]);
-      glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+      glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
       glEnable(GL_DEPTH_TEST);
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -342,7 +342,7 @@ static void draw(SDL_Window *window)
     //------------------------------------------
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glDisable(GL_DEPTH_TEST);
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
     // send fb_textures to alioscopy shader, then render to screen
@@ -384,10 +384,10 @@ int main(int argc, char *argv[])
   while(1)
   {
     // instruction menu
-    std::string exitMsg="appuyez sur [Esc] pour sauvegarder les resultats";
-    std::string launchMsg="appuyez sur [espace] pour lancer";
+    std::string exitMsg="Fin de l'experience.\nAppuyez sur [Esc] pour sauvegarder les resultats";
+    std::string launchMsg="Prochaine scene: <"+ sceneList.at(sceneID) + "> ("+std::to_string(run)+"/"+std::to_string(sceneList.size())+") \nappuyez sur [espace] pour lancer";
     std::string addMsg;
-    if(run>=1) addMsg = exitMsg;
+    if(run>=sceneList.size()) addMsg = exitMsg;
     else addMsg = launchMsg;
     T_instruction.generateText("Les instructions ici\n et la \n et la"+std::string(30,'\n')+addMsg,windowWidth/2);
 
@@ -395,7 +395,8 @@ int main(int argc, char *argv[])
     {
       event();
       draw(window);
-      if(bSpaceKeyDown && run==0)
+
+      if(bSpaceKeyDown && run<sceneList.size())
       {
         break;
       }
@@ -405,6 +406,7 @@ int main(int argc, char *argv[])
     std::cout << "start experiment" << std::endl;
     bInExperiment=true;
     run++;
+
     // main experiment loop
     while (1)
     {
@@ -432,35 +434,31 @@ int main(int argc, char *argv[])
         loadNoise(noiseSPP);
         noisy_plane.shader.use();
         noisy_plane.shader.setVec2("noisePos",idToVec2(patchPos));
-        std::cout << "MOVE in position [" << patchPos << "] ; NOISE VALUE = "<< noiseSPP << std::endl;
+        //std::cout << "MOVE in position [" << patchPos << "] ; NOISE VALUE = "<< noiseSPP << std::endl;
       }
       // change scene callback
-      if(experimentTimer.elapsed() > oneSceneDuration)
+      if(experimentTimer.elapsed() > oneSceneDuration || (sceneList.at(sceneID) == "p3d_tutorial" && experimentTimer.elapsed() > float(oneSceneDuration)/10))
       {
         experimentTimer.reset();
         patchUpdateTimer.reset();
         patchPos = -1; // hide block
         noisy_plane.shader.use();
         noisy_plane.shader.setVec2("noisePos",idToVec2(patchPos));
-        std::cout << "MOVE in position [" << patchPos << "] ; NOISE VALUE = "<< noiseSPP << std::endl;
-
-        // quit when scenes are exhausted
-        if(changeScene() == -1)
-        {
-          break;
-        }
+        // std::cout << "MOVE in position [" << patchPos << "] ; NOISE VALUE = "<< noiseSPP << std::endl;
+        changeScene();
+        break;// select next scene and back to main menu
       }
-      // aquisition callback
-      if(aquisitionTimer.elapsed() > aquisitionTime && patchPos > 0)
+      // aquisition callback (only if not tutorial)
+      if(aquisitionTimer.elapsed() > aquisitionTime && patchPos > 0 && sceneList.at(sceneID) != "p3d_tutorial")
         {log(1,1,sceneList.at(sceneID),experimentTimer.elapsed(),mousePosition,idToVec2(patchPos),noiseSPP,(int)bUserDetect);}
       
       draw(window);
       SDL_GL_SwapWindow(window);
     }
-    std::cout << "end of experiement" << std::endl;
-    sceneID=0;
     bInExperiment=false;
   }
+  std::cout << "end of experiement" << std::endl;
+  sceneID=0;
   // delete framebuffers 
   for (int i = 0; i < 8; i++)
   {
