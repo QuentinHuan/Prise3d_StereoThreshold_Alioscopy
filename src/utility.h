@@ -74,7 +74,7 @@ std::vector<int> next_stimulus_MLE(std::string sceneName)
 	std::vector<int> result = std::vector<int>();
 	//FGenericPlatformMisc::OsExecute(TEXT("python"), TEXT("python E : /git/Prise3D_StereoThreshold/DataProcessing/simulation_adaptative_sampling.py '250; 1'"));
 	std::string directory = "../";// root directory
-	std::string cmd = "python3 "+ directory + "script/ComputeNewStimulusSet.py " + sceneName + " && exit";
+	std::string cmd = "python3 "+ directory + "Prise3d_StereoThreshold_DataAnalysis/ComputeNewStimulusSet.py " + sceneName + " && exit";
 	std::cout << cmd << std::endl;
 	const int MAX_BUFFER = 2048;
 	char buffer[MAX_BUFFER];
@@ -148,7 +148,7 @@ void log(int showNoiseLeft, int showNoiseRight, std::string sceneName, float tim
 std::string saveExperiment()
 {
 	std::string directory = "../";
-	std::string cmd = "python3 " + directory + "script/ExperimentAnalysis.py" + " && exit";
+	std::string cmd = "python3 " + directory + "Prise3d_StereoThreshold_DataAnalysis/ExperimentAnalysis_Alioscopy.py" + " && exit";
 
 	FILE* in = popen(cmd.c_str(), "r");
 
