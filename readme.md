@@ -20,3 +20,14 @@ additional : lodepng (in /include), glm math lib
 
 # Python scripts setup:
 Scripts are in ```./Prise3d_StereoThreshold_DataAnalysis```. Check [here](https://github.com/QuentinHuan/Prise3d_StereoThreshold_DataAnalysis) for detailed instructions
+
+# Compile and run:
+``mkdir build 
+cd build
+cmake ..
+make ``
+
+Then ``./build/main`` to run
+
+# Command line arguments:
+*``--demo`` to run the program in demo mode (program will run using ``config/sceneDemo.ini`` and ``config/configDemo.ini``)
