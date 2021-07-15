@@ -28,13 +28,17 @@ void main()
     }
 
     // mouse cursor
-    if(bUserDetect==1)
+    distanceVec = abs(mousePos-TexCoords);
+    distance = max(distanceVec.x,distanceVec.y);
+    if(distance<0.005f*(1+variableMouseRadius))
     {
-        distanceVec = abs(mousePos-TexCoords);
-        distance = max(distanceVec.x,distanceVec.y);
-        if(distance<0.005f*(1+variableMouseRadius))
+        if(bUserDetect==1)
         {
             FragColor = vec4(0,1,0,1);
+        }
+        else
+        {
+            FragColor = (vec4(1,1,1,1) - texture(screenTexture, TexCoords)) * vec4(0.5,0,0,1);
         }
     }
 

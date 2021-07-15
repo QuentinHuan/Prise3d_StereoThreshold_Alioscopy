@@ -12,7 +12,7 @@ int windowWidth = 1920/downscaling;
 int windowHeight = 1080/downscaling;
 
 int windowPosx = 1920;
-int windowPosy = 0;
+int windowPosy = 1200-1080;
 
 glm::vec2 mousePosition;
 bool bUserDetect=false;
@@ -43,8 +43,9 @@ static bool init()
 
   SDL_GL_SetSwapInterval(1);
 
-
-
+  //SDL_SetWindowGrab(window,SDL_TRUE);
+  SDL_SetRelativeMouseMode(SDL_TRUE);
+  SDL_ShowCursor(SDL_ENABLE);
   //SDL window creation
   Uint32 windowFlags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;
 
@@ -126,7 +127,7 @@ static void event()
     case SDL_MOUSEMOTION:
       int mouseX, mouseY;
       SDL_GetMouseState( &mouseX, &mouseY );
-      mousePosition=glm::vec2((float)(mouseX)/(float)(windowWidth)*2.0f - 0.5f,(float)(mouseY)/(float)(windowHeight));
+      mousePosition=1.25f*glm::vec2((float)(mouseX)/(float)(windowWidth)*2.0f - 0.5f,(float)(mouseY)/(float)(windowHeight));
       break;
     case SDL_MOUSEBUTTONDOWN:
       bUserDetect=true;

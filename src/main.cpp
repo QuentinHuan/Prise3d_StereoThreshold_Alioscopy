@@ -20,6 +20,7 @@
 #include "texture.h"
 #include "context.h"
 #include "utility.h"
+
 //--------------------------------------------------------
 //scene
 //--------------------------------------------------------
@@ -118,7 +119,7 @@ static void loadRef()
 static void parseConfigFile()
 {
   
-  std::ifstream input( (!demoMode) ? configFilePath_Demo:configFilePath); // select config file
+  std::ifstream input( (demoMode) ? configFilePath_Demo:configFilePath); // select config file
   for( std::string line; getline( input, line ); )
   {
     //std::cout<<"line: "<< line <<std::endl;
@@ -147,7 +148,7 @@ static void parseConfigFile()
 // parse config/scenes.ini and put the result in sceneList vector
 static bool parseSceneFile()
 {
-  std::ifstream input( (!demoMode) ? sceneListFilePath_Demo:sceneListFilePath); // select sceneList file
+  std::ifstream input( (demoMode) ? sceneListFilePath_Demo:sceneListFilePath); // select sceneList file
   //std::ifstream input(sceneListFilePath_Demo);
   for( std::string line; getline( input, line ); )
   {
@@ -381,8 +382,12 @@ int main(int argc, char *argv[])
 {
   if(argc > 1)
   {
-    if(argv[1] == "--demo") demoMode = true; 
-    std::cout << "DEMO mode activated" << std::endl;
+    std::cout << argv[1] << std::endl;
+    if(strcmp(argv[1], "--demo")==0)
+    {
+      demoMode = true; 
+      std::cout << "DEMO mode activated" << std::endl;
+    } 
   }
 
   // see context.h
