@@ -19,4 +19,4 @@ additional : lodepng (in /include), glm math lib
 ``sudo apt-get install libfreetype6-dev``
 
 # Python scripts setup:
-Scripts are in ```./Prise3d_StereoThreshold_DataAnalysis```. Check [here](https://github.com/QuentinHuan/Prise3D_StereoThreshold/tree/main/DataProcessing) for detailed instructions
+Scripts are in ```./Prise3d_StereoThreshold_DataAnalysis```. Check [here](https://github.com/QuentinHuan/Prise3d_StereoThreshold_DataAnalysis) for detailed instructions
