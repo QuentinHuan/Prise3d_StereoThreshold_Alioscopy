@@ -22,10 +22,10 @@ additional : lodepng (in /include), glm math lib
 Scripts are in ```./Prise3d_StereoThreshold_DataAnalysis```. Check [here](https://github.com/QuentinHuan/Prise3d_StereoThreshold_DataAnalysis) for detailed instructions
 
 # Compile and run:
-``mkdir build 
+`mkdir build
 cd build
 cmake ..
-make ``
+make `
 
 Then ``./build/main`` to run
 
