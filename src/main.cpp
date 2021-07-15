@@ -58,6 +58,13 @@ Texture T_ref[8]; // ref 8pov images
 Texture T_noise[8]; // noisy 8pov images
 Texture T_instruction;
 
+// config file
+std::string configFilePath = "../config/config.ini";
+std::string configFilePath_Demo = "../config/configDemo.ini";
+std::string sceneListFilePath = "../config/scenes.ini";
+std::string sceneListFilePath_Demo = "../config/scenesDemo.ini";
+bool demoMode = false;
+
 // internal state
 Timer experimentTimer;
 Timer tutorialTimer;
@@ -110,7 +117,8 @@ static void loadRef()
 // parse config/config.ini and set parameters accordingly
 static void parseConfigFile()
 {
-  std::ifstream input( "../config/config.ini" );
+  
+  std::ifstream input( (!demoMode) ? configFilePath_Demo:configFilePath); // select config file
   for( std::string line; getline( input, line ); )
   {
     //std::cout<<"line: "<< line <<std::endl;
@@ -139,7 +147,8 @@ static void parseConfigFile()
 // parse config/scenes.ini and put the result in sceneList vector
 static bool parseSceneFile()
 {
-  std::ifstream input( "../config/scenes.ini" );
+  std::ifstream input( (!demoMode) ? sceneListFilePath_Demo:sceneListFilePath); // select sceneList file
+  //std::ifstream input(sceneListFilePath_Demo);
   for( std::string line; getline( input, line ); )
   {
     if(line.find("#"))// filter out comments
@@ -187,7 +196,9 @@ static int changeScene()
   sceneID = (sceneID + 1);
 
   if(sceneID >= sceneList.size())
-  {std::cout << "changeScene() return -1" << std::endl;
+  {
+    sceneID=0;
+    std::cout << "changeScene() return -1" << std::endl;
     return -1;}
 
   loadRef();
@@ -311,6 +322,7 @@ static void draw(SDL_Window *window)
           noisy_plane.shader.setFloat("variableMouseRadius",0.0f);
         }
       }
+      else noisy_plane.shader.setFloat("variableMouseRadius",0.0f); // force cursor back to normal size when not in tutorial
 
       if(bInExperiment) // Instructions hidden, draw 8pov images
       {
@@ -367,6 +379,12 @@ static void draw(SDL_Window *window)
 //-----------------
 int main(int argc, char *argv[])
 {
+  if(argc > 1)
+  {
+    if(argv[1] == "--demo") demoMode = true; 
+    std::cout << "DEMO mode activated" << std::endl;
+  }
+
   // see context.h
   if (!init()){printf("failed\n");}
   glViewport(0, 0, windowWidth, windowHeight);
@@ -448,8 +466,8 @@ int main(int argc, char *argv[])
         changeScene();
         break;// select next scene and back to main menu
       }
-      // aquisition callback (only if not tutorial)
-      if(aquisitionTimer.elapsed() > aquisitionTime && patchPos > 0 && sceneList.at(sceneID) != "p3d_tutorial")
+      // aquisition callback (only if not tutorial and not demo mode)
+      if(aquisitionTimer.elapsed() > aquisitionTime && patchPos > 0 && sceneList.at(sceneID) != "p3d_tutorial" && demoMode == false)
         {log(1,1,sceneList.at(sceneID),experimentTimer.elapsed(),mousePosition,idToVec2(patchPos),noiseSPP,(int)bUserDetect);}
       
       draw(window);
