@@ -7,7 +7,7 @@ additional : lodepng (in /include), glm math lib
 # Dependencies:
 
 *SDL2 install command:
-```bash sudo apt-get install libsdl2-2.0``` and ```sudo apt install libsdl2-dev```
+```sudo apt-get install libsdl2-2.0``` and ```sudo apt install libsdl2-dev```
 
 *GLM Math lib install command:
 ``sudo apt install libglm-dev``
