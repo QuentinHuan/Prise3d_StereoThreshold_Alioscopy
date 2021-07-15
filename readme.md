@@ -30,4 +30,4 @@ make ``
 Then ``./build/main`` to run
 
 # Command line arguments:
-*``--demo`` to run the program in demo mode (program will run using ``config/sceneDemo.ini`` and ``config/configDemo.ini``)
+``./build/main --demo`` runs the program in demo mode (program will run using ``config/sceneDemo.ini`` and ``config/configDemo.ini``)
