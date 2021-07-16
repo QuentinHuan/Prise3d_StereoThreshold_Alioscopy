@@ -4,24 +4,32 @@ This program was made to mesure perceptive noise thresholds for MonteCarlo patht
 uses: OpenGL, SDL2, glad,
 additional : lodepng (in /include), glm math lib
 
-# Dependencies installation:
+# Dependencies:
 
-sdl2 install command
-``sudo apt-get install libsdl2-2.0
-sudo apt install libsdl2-dev``
+*SDL2 install command:
+```sudo apt-get install libsdl2-2.0``` and ```sudo apt install libsdl2-dev```
 
-glm install command
+*GLM Math lib install command:
 ``sudo apt install libglm-dev``
 
-SDL2 TTF install command
+*SDL2-TTF install command:
 ``sudo apt-get install libsdl2-ttf-dev``
 
-lib Freetype install command
+*lib Freetype install command:
 ``sudo apt-get install libfreetype6-dev``
 
-python script in script folder:
-install scripts:
-* ```get-pip.py```: install pip on computer
-* ```install.sh```: bash script to install all the dependencies
+# Python scripts setup:
+Scripts are in ```./Prise3d_StereoThreshold_DataAnalysis```. Check [here](https://github.com/QuentinHuan/Prise3d_StereoThreshold_DataAnalysis) for detailed instructions
 
-(more info [here](https://github.com/QuentinHuan/Prise3D_StereoThreshold/tree/main/DataProcessing))
+# Compile and run:
+```bash
+mkdir build
+cd build
+cmake ..
+make 
+```
+
+Then ``./build/main`` to run
+
+# Command line arguments:
+``./build/main --demo`` runs the program in demo mode (program will run using ``./config/sceneDemo.ini`` and ``./config/configDemo.ini``)
