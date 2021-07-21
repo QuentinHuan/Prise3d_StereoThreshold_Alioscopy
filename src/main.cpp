@@ -465,6 +465,7 @@ int main(int argc, char *argv[])
         experimentTimer.reset();
         patchUpdateTimer.reset();
         patchPos = -1; // hide block
+        patchLoop=0;
         noisy_plane.shader.use();
         noisy_plane.shader.setVec2("noisePos",idToVec2(patchPos));
         // std::cout << "MOVE in position [" << patchPos << "] ; NOISE VALUE = "<< noiseSPP << std::endl;
@@ -472,8 +473,11 @@ int main(int argc, char *argv[])
         break;// select next scene and back to main menu
       }
       // aquisition callback (only if not tutorial and not demo mode)
-      if(aquisitionTimer.elapsed() > aquisitionTime && patchPos > 0 && sceneList.at(sceneID) != "p3d_tutorial" && demoMode == false)
-        {log(1,1,sceneList.at(sceneID),experimentTimer.elapsed(),mousePosition,idToVec2(patchPos),noiseSPP,(int)bUserDetect);}
+      if(aquisitionTimer.elapsed() > aquisitionTime && patchPos >= 0 && sceneList.at(sceneID) != "p3d_tutorial" && demoMode == false)
+        {
+          aquisitionTimer.reset();
+          log(1,1,sceneList.at(sceneID),experimentTimer.elapsed(),mousePosition,idToVec2(patchPos),noiseSPP,(int)bUserDetect);
+        }
       
       draw(window);
       SDL_GL_SwapWindow(window);
