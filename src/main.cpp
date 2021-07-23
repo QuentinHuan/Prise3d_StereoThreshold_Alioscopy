@@ -71,6 +71,7 @@ Timer experimentTimer;
 Timer tutorialTimer;
 Timer patchUpdateTimer;
 Timer aquisitionTimer;
+Timer patchBlinkTimer;
 std::vector<std::string> sceneList; // scenelist loaded from config/scenes.ini
 std::vector<int> stimulusSet; // stimulus for each block, computed by script/ComputeNewStimulusSet.py when the scene is loaded
 int sceneID=-1; // 0 is tutorial
@@ -78,6 +79,7 @@ float aquisitionTime=0.01f; // save data to log every x seconds
 int patchPos=0; // patch position in image block ID ([1,16]) ; -1 is outside of the plane
 int noiseSPP=1; // image ID
 bool bInExperiment = false;
+int patchVisible=1;
 // parameters ==> change them in config/config.ini
 std::string ImageDatabasePath;
 int oneSceneDuration=15; // in sec
@@ -86,6 +88,7 @@ int refSPP=1; // image ID
 
 int patchPosList[] = {13,2,3,16,5,9,14,8,6,12,11,10,1,7,15,4};
 int patchLoop=0;
+float pathBlinkFrequency=0.075f;
 //--------------------
 // Texture management
 //--------------------
@@ -269,6 +272,7 @@ static void sceneSetup()
   changeScene();
   // initial noise patch position: 0 is invisible (outside of rendering plane)
   noisy_plane.shader.setVec2("noisePos",idToVec2(0));
+  noisy_plane.shader.setBool("activateBorder",!demoMode);
   // unbind framebuffer
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
@@ -401,7 +405,7 @@ int main(int argc, char *argv[])
   patchUpdateTimer.reset();
   aquisitionTimer.reset();
   tutorialTimer.reset();
-
+  patchBlinkTimer.reset();
   int run = 0;
   // when experiment is done, loop to main menu
   while(1)
@@ -457,6 +461,8 @@ int main(int argc, char *argv[])
         loadNoise(noiseSPP);
         noisy_plane.shader.use();
         noisy_plane.shader.setVec2("noisePos",idToVec2(patchPos));
+        noisy_plane.shader.setFloat("flash",1.0f);
+        patchBlinkTimer.reset();
         //std::cout << "MOVE in position [" << patchPos << "] ; NOISE VALUE = "<< noiseSPP << std::endl;
       }
       // change scene callback
@@ -473,12 +479,21 @@ int main(int argc, char *argv[])
         break;// select next scene and back to main menu
       }
       // aquisition callback (only if not tutorial and not demo mode)
-      if(aquisitionTimer.elapsed() > aquisitionTime && patchPos >= 0 && sceneList.at(sceneID) != "p3d_tutorial" && demoMode == false)
+      if(aquisitionTimer.elapsed() > aquisitionTime && patchPos >= 0 && sceneList.at(sceneID) != "p3d_tutorial" && demoMode == false && experimentTimer.elapsed() > patchUpdateFrequency)
         {
           aquisitionTimer.reset();
           log(1,1,sceneList.at(sceneID),experimentTimer.elapsed(),mousePosition,idToVec2(patchPos),noiseSPP,(int)bUserDetect);
         }
       
+      if(patchBlinkTimer.elapsed() > pathBlinkFrequency)
+      {
+        patchVisible=(patchVisible+1)%2;
+        noisy_plane.shader.use();
+        noisy_plane.shader.setInt("visible",patchVisible);
+        noisy_plane.shader.setFloat("flash",0.0f);
+        patchBlinkTimer.reset();
+      }
+
       draw(window);
       SDL_GL_SwapWindow(window);
     }
